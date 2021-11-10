@@ -1,0 +1,7 @@
+setup.py
+konoise.egg-info/PKG-INFO
+konoise.egg-info/SOURCES.txt
+konoise.egg-info/dependency_links.txt
+konoise.egg-info/top_level.txt
+testPackage/__init__.py
+testPackage/test.py
