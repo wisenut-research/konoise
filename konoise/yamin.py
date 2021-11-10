@@ -1,5 +1,5 @@
 import random
-from utils import assemble, disassemble
+from .utils import assemble, disassemble
 
 rng = random.Random()
 _dict_yamin = {('ㄷ', 'ㅐ'): ('ㅁ', 'ㅓ'), ('ㅁ', 'ㅕ'): ('ㄸ', 'ㅣ'), ('ㄱ', 'ㅟ'): ('ㅋ', 'ㅓ'), ('ㅍ', 'ㅏ'): ('ㄱ', 'ㅘ'),

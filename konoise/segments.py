@@ -1,6 +1,5 @@
 import random
-
-from utils import assemble, disassemble
+from .utils import assemble, disassemble
 
 rng = random.Random()
 

@@ -1,10 +1,10 @@
 import random
-import itertools
-from utils import assemble, disassemble
+from .utils import assemble, disassemble
 
 rng = random.Random()
 
 _palatalization_set = {'ㄷ': 'ㅈ', 'ㅌ': 'ㅊ'}
+_palatalization_set2 = {'ㄷ': 'ㅊ', 'ㄱ': 'ㅋ'}
 _linking_set = {'ㄻ': 'ㄹㅁ', 'ㅄ': 'ㅂㅆ', 'ㄳ': 'ㄱㅅ', 'ㄽ': 'ㄹㅅ', 'ㅊ': ' ㅊ', 'ㅂ': ' ㅂ', 'ㅍ': ' ㅂ', 'ㄷ': ' ㄹ', 'ㄹ': ' ㄹ', 'ㄹㅎ': ' ㄹ'}
 _linking_words = ('이', '을', '를', '은', '았', '었', '아', '어')
 
@@ -15,10 +15,11 @@ _nasalization_set = {'ㅂㅁ': 'ㅁㅁ', 'ㄷㄴ': 'ㄴㄴ', 'ㄱㅁ': 'ㅇㅁ',
 _assimilation_set = {'ㄺㄴ': 'ㅇㄴ'}
 
 
-
 def palatalization(fc,nc):
     if (fc[2] in _palatalization_set) and nc[:2] == ['ㅇ', 'ㅣ']:
         nc[0], fc[2] = _palatalization_set[fc[2]], ' '
+    if (fc[2] in _palatalization_set2) and nc[0] == 'ㅎ':
+        nc[0], fc[2] = _palatalization_set2[fc[2]], ' '
     return fc, nc
 
 
@@ -65,7 +66,7 @@ def _cond_base(rng, prob=1.):
 
 
 def _get_weights4funcs(funcs, weights):
-    if not weights and not len(funcs):
+    if not weights and len(funcs)!=0:
         weights = [1/len(funcs)]* len(funcs)
     if len(funcs) == len(weights):
         return weights
@@ -73,21 +74,17 @@ def _get_weights4funcs(funcs, weights):
         raise ValueError("Please align the number of functions and weights(or leave blank).")
 
 
-def _select_one(funcs, rng, weights=[]):
-    if len(funcs)==1:
+def _select_one(funcs, rng, weights):
+    if len(funcs) == 1:
         return funcs[0]
     weights = _get_weights4funcs(funcs, weights)
     return rng.choices(funcs,weights=weights, k=1)[0]
 
 
-def phonetic_change(text, funcs=['palatalization'], prob=0.5):
-    decomposed = [disassemble(t) for t in text]
-    funcs = [_functions[f] for f in funcs if f in _functions ]
+def phonetic_change(text, funcs=['palatalization'], weights=[], prob=0.5):
+    decomposed = [list(disassemble(t)) for t in text]
+    funcs = [_functions[f] for f in funcs if f in _functions]
     for i in range(len(decomposed)-1):
         if _cond_base(rng, prob):
-            decomposed[i], decomposed[i+1] = _select_one(funcs,rng)(decomposed[i], decomposed[i+1])
+            decomposed[i], decomposed[i+1] = _select_one(funcs,rng, weights=weights)(decomposed[i], decomposed[i+1])
     return ''.join([assemble(vlist) for vlist in decomposed])
-
-
-if __name__ == '__main__':
-    print('')

@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 
 setup(name='konoise', # 패키지 명
 
-version='1.0',
+version='1.0.3.6',
 
-description='testPackage Package',
+description='Korean Noise Generator',
 
 author='Eddie',
 
@@ -12,12 +12,12 @@ author_email='hkjeo13@gmail.com',
 
 license='MIT',
 
-py_modules=['testPackage'],
+py_modules=['konoise'],
 
 python_requires='>=3',
 
-install_requires=[], # 패키지 사용을 위해 필요한 추가 설치 패키지
+install_requires=[],
 
-packages=['testPackage'] # 패키지가 들어있는 폴더들
+packages=['konoise']
 
 )
