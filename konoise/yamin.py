@@ -1,9 +1,9 @@
 import random
-from .utils import assemble, disassemble
+from utils import assemble, disassemble
 
 rng = random.Random()
-_dict_yamin = {('ㄷ', 'ㅐ'): ('ㅁ', 'ㅓ'), ('ㅁ', 'ㅕ'): ('ㄸ', 'ㅣ'), ('ㄱ', 'ㅟ'): ('ㅋ', 'ㅓ'), ('ㅍ', 'ㅏ'): ('ㄱ', 'ㅘ'),
-               ('ㅍ', 'ㅣ'): ('ㄲ', 'ㅢ'), ('ㅇ', 'ㅠ '): ('ㅇ', 'ㅡ', 'ㄲ'), ('ㄱ', 'ㅜ', 'ㅅ'): ('ㄱ', 'ㅡ', 'ㅅ')}
+_dict_yamin = {('ㄷ', 'ㅐ', ' '): ('ㅁ', 'ㅓ', ' '), ('ㅁ', 'ㅕ', ' '): ('ㄸ', 'ㅣ', ' '), ('ㄱ', 'ㅟ', ' '): ('ㅋ', 'ㅓ', ' '), ('ㅍ', 'ㅏ', ' '): ('ㄱ', 'ㅘ', ' '),
+               ('ㅍ', 'ㅣ', ' '): ('ㄲ', 'ㅢ', ' '), ('ㅇ', 'ㅠ', ' '): ('ㅇ', 'ㅡ', 'ㄲ'), ('ㄱ', 'ㅜ', 'ㅅ'): ('ㄱ', 'ㅡ', 'ㅅ')}
 
 
 def _cond_base(vlist, rng, prob=1.):
@@ -20,13 +20,11 @@ def yamin_jungum(text, prob=0.5):
     for de in decomposed:
         rep = de
         if _cond_base(de, rng, prob):
-            if de[:2] in _dict_yamin:
-                rep = _dict_yamin[de[:2]]+de[2:]
-            elif de in _dict_yamin:
+            if de in _dict_yamin:
                 rep = _dict_yamin[de]
         replaced.append(rep)
     return ''.join([assemble(r) for r in replaced])
 
 
 if __name__ == '__main__':
-    print(yamin_jungum('귀여워'))
+    print(yamin_jungum('이유로', prob=1.))
