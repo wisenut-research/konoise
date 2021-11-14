@@ -47,6 +47,8 @@ class NoiseGenerator(object):
                 methods = list(self.functions.keys())
 
         candidates = [self.functions[f] for f in methods if self.functions]
+        self.rng.shuffle(candidates)
+
         if not candidates:
             raise KeyError(f"There are no funtions available(Functions:{','.join(list(self.functions.keys()))})")
 

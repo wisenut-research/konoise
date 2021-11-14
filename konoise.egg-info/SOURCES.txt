@@ -1,9 +1,9 @@
+README.md
 setup.py
 konoise/__init__.py
 konoise/generator.py
 konoise/phoneme.py
 konoise/segments.py
-konoise/typing.py
 konoise/utils.py
 konoise/yamin.py
 konoise.egg-info/PKG-INFO
