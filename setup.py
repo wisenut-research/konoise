@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(name='konoise', # 패키지 명
 
-version='1.0.3.6',
+version='1.0.4.7',
 
 description='Korean Noise Generator',
 
