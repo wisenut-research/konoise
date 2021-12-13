@@ -1,5 +1,5 @@
 # 한국어 노이즈 추가 (konoise)
-한국어 문서에 노이즈를 추가하는 것을 돕는 파이썬 라이브러리입니다.
+한국어 문서에 노이즈를 추가하는 것을 돕는 파이썬 라이브러리입니다(Library for generating the noise in Korean).
 
 ## 설치 방법
 ```
