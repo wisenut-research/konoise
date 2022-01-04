@@ -26,4 +26,6 @@ install_requires=[],
 
 packages=['konoise']
 
+install_requires=['tqdm'],
+
 )
