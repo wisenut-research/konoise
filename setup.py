@@ -22,8 +22,16 @@ py_modules=['konoise'],
 
 python_requires='>=3',
 
-packages=['konoise']
-
 install_requires=['tqdm'],
 
+packages=['konoise'],
+
+classifiers=[
+    'Development Status :: 5 - Stable',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Science/Research',
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    ],
 )
