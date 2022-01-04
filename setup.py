@@ -1,10 +1,16 @@
 from setuptools import setup, find_packages
 
+with open("README.md", mode="r", encoding="utf-8") as readme:
+    long_description = readme.read()
+
 setup(name='konoise', # 패키지 명
 
 version='1.0.4.8',
 
 description='Korean Noise Generator',
+long_description=long_description,
+long_description_content_type="text/markdown",
+url="https://github.com/wisenut-research/konoise",
 
 author='Eddie',
 
