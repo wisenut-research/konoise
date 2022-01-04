@@ -22,8 +22,6 @@ py_modules=['konoise'],
 
 python_requires='>=3',
 
-install_requires=[],
-
 packages=['konoise']
 
 install_requires=['tqdm'],
