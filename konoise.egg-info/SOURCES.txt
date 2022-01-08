@@ -9,4 +9,6 @@ konoise/yamin.py
 konoise.egg-info/PKG-INFO
 konoise.egg-info/SOURCES.txt
 konoise.egg-info/dependency_links.txt
+konoise.egg-info/not-zip-safe
+konoise.egg-info/requires.txt
 konoise.egg-info/top_level.txt

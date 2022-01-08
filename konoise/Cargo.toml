@@ -1,0 +1,21 @@
+[package]
+name = "generator"
+version = "0.1.0"
+authors = ["psyche"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "generator"
+path = "lib.rs"
+crate-type = ["cdylib"]
+
+
+[dependencies]
+rand="0.7"
+phf = { version = "0.10", features = ["macros"] }
+
+[dependencies.cpython]
+version = "*"
+features = ["extension-module"]
