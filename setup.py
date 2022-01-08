@@ -5,9 +5,9 @@ with open("README.md", mode="r", encoding="utf-8") as readme:
     long_description = readme.read()
 
 setup(
-    name='konoise',  # 패키지 명
-    version='1.0.5.0',
-    rust_extensions=[RustExtension("konoise/lib", binding=Binding.RustCPython)],
+    name='konoise',
+    version='1.0.5.1',
+    rust_extensions=[RustExtension("konoise/rust_generator", binding=Binding.RustCPython)],
     description='Korean Noise Generator',
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -8,7 +8,7 @@ edition = "2018"
 
 [lib]
 name = "generator"
-path = "lib.rs"
+path = "konoise/rust_generator.rs"
 crate-type = ["cdylib"]
 
 
