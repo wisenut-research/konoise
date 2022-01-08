@@ -8,7 +8,7 @@ edition = "2018"
 
 [lib]
 name = "generator"
-path = "konoise/rust_generator.rs"
+path = "konoise/RustGenerator.rs"
 crate-type = ["cdylib"]
 
 
@@ -18,4 +18,3 @@ phf = { version = "0.10", features = ["macros"] }
 
 [dependencies.cpython]
 version = "*"
-features = ["extension-module"]
