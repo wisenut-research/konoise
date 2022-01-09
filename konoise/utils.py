@@ -17,7 +17,7 @@ def disassemble(char):
 
 
 def assemble(vlist):
-    if ''.join(vlist[1:]):
-        c, v, fc = [composed[i].index(v) for i,v in enumerate(vlist)]
-        return chr(fc + 588*c + 28*v + 44032)
+    if vlist[1] and vlist[2]:
+        number = sum([composed[i].index(v)*n for i, (v, n) in enumerate(zip(vlist, [588, 28, 1]))])
+        return chr(number + 44032)
     return vlist[0]
