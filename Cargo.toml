@@ -18,3 +18,4 @@ phf = { version = "0.10", features = ["macros"] }
 
 [dependencies.cpython]
 version = "*"
+features = ["extension-module"]
