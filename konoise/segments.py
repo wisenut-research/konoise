@@ -31,4 +31,4 @@ def change_vowels(text, prob=0.5):
 
 
 if __name__ == '__main__':
-    result = change_vowels('안녕 하세요r', prob=1.)
+    result = change_vowels('안녕 하세요', prob=1.)
