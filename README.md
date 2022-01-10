@@ -92,6 +92,7 @@ rust_generator.get_noise(text, 'disattach-letters', 1) # provide the same method
 
 import requests
 
+# Naver Sentiment Movie Corpus의 학습 데이터셋(텍스트)을 대상으로 실험하였습니다.
 NSMC = 'https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt'
 with requests.get() as r:
     target = r.text
