@@ -9,6 +9,7 @@ import re
 import random
 from functools import partial
 
+
 def split_sentence(text):
     return re.split('(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', text)
 
