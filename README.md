@@ -54,6 +54,18 @@ print(text)
 **[yamin-jungum]** 야민정음으로 일부 글자를 변환합니다. 단, 가독성이 떨어지는 일부 표현은 제외되었습니다(귀여워 > 커여워).
 
 
+## Noise Generator in Rust
+
+```
+from konoise import rust_generator
+
+text = "행복한 가정은 모두가 닮았지만, 불행한 가정은 모두 저마다의 이유로 불행하다."
+rust_generator.get_noise(text, 'disattach-letters', 1) # provide the same methods(except yamin-jungum)
+>> '행복한 ㄱㅏ정은 모두ㄱㅏ 닮았ㅈㅣ만, 불행한 ㄱㅏ정은 모두 ㅈㅓㅁㅏㄷㅏ의 ㅇㅣ유로 불행ㅎㅏㄷㅏ.'
+```
+프로그래밍 언어 중 하나인 Rust로 만들어진 generator이며, 사용방법은 파이썬 버전과 같습니다('yamin-jungum'은 제외).
+
+
 
 **변형 예시**
 ```
