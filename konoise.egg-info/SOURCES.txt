@@ -1,4 +1,5 @@
 README.md
+setup.cfg
 setup.py
 konoise/__init__.py
 konoise/generator.py

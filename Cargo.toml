@@ -17,5 +17,5 @@ rand="0.7"
 phf = { version = "0.10", features = ["macros"] }
 
 [dependencies.pyo3]
-version = "0.15.1"
+version = "*"
 features = ["extension-module"]
