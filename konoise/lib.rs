@@ -215,8 +215,7 @@ fn get_noise(_py: Python, text:&str, method:&str, prob:f64)-> PyResult<String>{
 
 
 #[pymodule]
-fn noise_generate(_py: Python, m: &PyModule) -> PyResult<()> {
+fn rust_generator(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(get_noise, m)?)?;
-
     Ok(())
 }

@@ -1,8 +1,16 @@
+Cargo.toml
 README.md
 setup.cfg
 setup.py
+.idea/.gitignore
+.idea/konoise.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/inspectionProfiles/profiles_settings.xml
 konoise/__init__.py
 konoise/generator.py
+konoise/lib.rs
 konoise/phoneme.py
 konoise/segments.py
 konoise/utils.py
