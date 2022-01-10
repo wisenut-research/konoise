@@ -1,13 +1,8 @@
 use phf::phf_map;
 use rand::prelude::*;
-extern crate cpython;
-use cpython::{PyResult, Python, py_module_initializer, py_fn};
 
-py_module_initializer!(generator, |py, m| {
-    m.add(py, "__doc__", "This module is implemented in Rust.")?;
-    m.add(py, "get_noise", py_fn!(py, get_noise(text: &str, method:&str, prob:f64)))?;
-    Ok(())
-});
+extern crate pyo3;
+use pyo3::prelude::*;
 
 
 static CONSONANT: [char; 19] = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
@@ -32,9 +27,6 @@ static LIQUIDIZATION_EXPT: phf::Map<&str, &str> = phf_map! {"ㄴㄹㅕㄱ"=> "�
 
 static NASALIZATION: phf::Map<&str, &str> = phf_map! {"ㅂㅁ"=> "ㅁㅁ", "ㄷㄴ"=> "ㄴㄴ", "ㄱㅁ"=> "ㅇㅁ", "ㄱㄴ"=> "ㅇㄴ", "ㅇㄹ"=> "ㅇㄴ", "ㅁㄹ"=> "ㅁㄴ", "ㄲㄴ"=> "ㅇㄴ", "ㅂㄹ"=> "ㅁㄴ", "ㄱㄹ"=> "ㅇㄴ", "ㅊㄹ"=> "ㄴㄴ", "ㄺㄴ"=> "ㅇㄴ", "ㅍㄴ"=> "ㅁㄴ"};
 static ASSIMILATION: phf::Map<&str, &str> = phf_map! {"ㄺㄴ"=> "ㅇㄴ"};
-
-
-
 
 
 fn disassemble(ch:char) -> Vec<char>{
@@ -69,7 +61,6 @@ fn disattach_letters(char_vec:Vec<char>)-> String{
     }
 }
 
-
 fn change_vowels(char_vec:Vec<char>) -> String {
     if char_vec[2] == ' ' && CHANGE_VOWELS.contains_key(&char_vec[1]){
         let changed = CHANGE_VOWELS.get(&char_vec[1]).unwrap().to_ascii_lowercase();
@@ -93,7 +84,6 @@ fn patalization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
     }
 }
 
-
 fn linking(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
     if LINKING.contains_key(&fc[2].to_string()) && LINKING_WORD.contains(&assemble(vec![nc[0],nc[1],nc[2]])){
         let v = LINKING.get(&fc[2].to_string()).unwrap().chars().collect::<Vec<char>>();
@@ -104,7 +94,6 @@ fn linking(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
         return (fc.clone(),nc.clone())
     }
 }
-
 
 fn liquidization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
     let key = fc[2].to_string();
@@ -120,7 +109,6 @@ fn liquidization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
     }
     return (nfc, nnc)
 }
-
 
 fn nasalization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
     let mut key = fc[2].to_string();
@@ -181,7 +169,7 @@ fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> Vec<Vec<ch
     mut_text
 }
 
-
+#[pyfunction]
 fn get_noise(_py: Python, text:&str, method:&str, prob:f64)-> PyResult<String>{
     let mut rng = rand::thread_rng();
 
@@ -223,4 +211,12 @@ fn get_noise(_py: Python, text:&str, method:&str, prob:f64)-> PyResult<String>{
     }
     //assembling
     Ok(string_output.join(""))
+}
+
+
+#[pymodule]
+fn noise_generate(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(get_noise, m)?)?;
+
+    Ok(())
 }
