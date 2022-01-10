@@ -87,37 +87,37 @@ rust_generator.get_noise(text, 'disattach-letters', 1) # provide the same method
 ```
 프로그래밍 언어 중 하나인 Rust로 만들어진 generator이며, 사용방법은 파이썬 버전과 같습니다('yamin-jungum'은 제외).
 
-* Rust vs. Python
-```
+    * Rust vs. Python
+    ```
 
-import requests
+    import requests
 
-# Naver Sentiment Movie Corpus의 학습 데이터셋(텍스트)을 대상으로 실험하였습니다.
-NSMC = 'https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt'
-with requests.get() as r:
-    target = r.text
-    
+    # Naver Sentiment Movie Corpus의 학습 데이터셋(텍스트)을 대상으로 실험하였습니다.
+    NSMC = 'https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt'
+    with requests.get() as r:
+        target = r.text
 
-import time
-from konoise import rust_generator, NoiseGenerator
 
-# Rust
-start = time.time()
-for i in range(10):
-    rust_generator.get_noise(contents, 'disattach-letters', 1)
-print(f"Average Times: {(time.time()-start)/10):2f} s",
->> Average Times: 2.13 s
+    import time
+    from konoise import rust_generator, NoiseGenerator
 
-# Python
-generator = NoiseGenerator()
-start = time.time()
-for i in range(10):
-    generator.generate(contents, methods='disattach-letters', prob=1, delimeter='newline', verbose=0)
-print((time.time()-start)/10)
->> Average Times: 48.20 s
+    # Rust
+    start = time.time()
+    for i in range(10):
+        rust_generator.get_noise(contents, 'disattach-letters', 1)
+    print(f"Average Times: {(time.time()-start)/10):2f} s",
+    >> Average Times: 2.13 s
 
-# Rust is faster than Python on the 'disattach-letters' methods(95.58% reduced)
-```
+    # Python
+    generator = NoiseGenerator()
+    start = time.time()
+    for i in range(10):
+        generator.generate(contents, methods='disattach-letters', prob=1, delimeter='newline', verbose=0)
+    print((time.time()-start)/10)
+    >> Average Times: 48.20 s
+
+    # Rust is faster than Python on the 'disattach-letters' methods(95.58% reduced)
+    ```
 
 
 ## 기타
