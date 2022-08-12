@@ -1,12 +1,11 @@
 Metadata-Version: 2.1
 Name: konoise
-Version: 1.0.5.6
+Version: 1.0.5.8
 Summary: Korean Noise Generator
 Home-page: https://github.com/wisenut-research/konoise
 Author: Eddie
 Author-email: hkjeo13@gmail.com
 License: MIT
-Platform: UNKNOWN
 Classifier: Intended Audience :: Developers
 Classifier: Intended Audience :: Science/Research
 Classifier: License :: OSI Approved :: MIT License
@@ -71,7 +70,6 @@ print(text)
 **[yamin-jungum]** 야민정음으로 일부 글자를 변환합니다. 단, 가독성이 떨어지는 일부 표현은 제외되었습니다(귀여워 > 커여워).
 
 
-
 **변형 예시**
 ```
 [original]  행복한 가정은 모두가 닮았지만, 불행한 가정은 모두 저마다의 이유로 불행하다.
@@ -93,9 +91,52 @@ print(text)
 [yamin-jungum, prob=1.] 행복한 가정은 모두가 닮았지만, 불행한 가정은 모두 저마다의 이윾로 불행하다.
 ```
 
+
+## Noise Generator in Rust
+
+```
+from konoise import rust_generator
+
+text = "행복한 가정은 모두가 닮았지만, 불행한 가정은 모두 저마다의 이유로 불행하다."
+rust_generator.get_noise(text, 'disattach-letters', 1) # provide the same methods(except yamin-jungum)
+>> '행복한 ㄱㅏ정은 모두ㄱㅏ 닮았ㅈㅣ만, 불행한 ㄱㅏ정은 모두 ㅈㅓㅁㅏㄷㅏ의 ㅇㅣ유로 불행ㅎㅏㄷㅏ.'
+```
+프로그래밍 언어 중 하나인 Rust로 만들어진 generator이며, 사용방법은 파이썬 버전과 같습니다('yamin-jungum'은 제외).
+
+    * Rust vs. Python
+    ```
+
+    import requests
+
+    # Naver Sentiment Movie Corpus의 학습 데이터셋(텍스트)을 대상으로 실험하였습니다.
+    NSMC = 'https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt'
+    with requests.get() as r:
+        target = r.text
+
+
+    import time
+    from konoise import rust_generator, NoiseGenerator
+
+    # Rust
+    start = time.time()
+    for i in range(10):
+        rust_generator.get_noise(contents, 'disattach-letters', 1)
+    print(f"Average Times: {(time.time()-start)/10):2f} s",
+    >> Average Times: 2.13 s
+
+    # Python
+    generator = NoiseGenerator()
+    start = time.time()
+    for i in range(10):
+        generator.generate(contents, methods='disattach-letters', prob=1, delimeter='newline', verbose=0)
+    print((time.time()-start)/10)
+    >> Average Times: 48.20 s
+
+    # Rust is faster than Python on the 'disattach-letters' methods(95.58% reduced)
+    ```
+
+
 ## 기타
 - 비음화, 유음화, 구개음화, 연음, 음운동화의 모든 규칙이 구현되지 않은 상태이며, 추후 확대될 예정입니다(누락된 규칙이 있을 수 있으니, 발견 시 피드백 주시면 감사하겠습니다).
 - prob는 변형 가능한 글자들에 대해서 해당 확률만큼 확률적으로 실행됩니다(prob가 1이라고 해서 모든 텍스트가 변경되는 것이 아닙니다).
 - 두 개 이상의 방법을 사용할 경우(쉼표로 구분), 한 단위 텍스트에서 두 개의 방법이 사용되는 것이 아니라 각 단위 텍스트마다 랜덤하게 방법을 결정하여 실행합니다. 
-
-
