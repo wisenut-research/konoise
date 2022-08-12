@@ -5,6 +5,8 @@ extern crate pyo3;
 use pyo3::prelude::*;
 
 
+static PHONETICS: [&str; 5] = ["palatalization","linking","liquidization","nasalization","assimilation"];
+
 static CONSONANT: [char; 19] = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
 static VOWEL: [char; 21] = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
 static FINAL_CONSONANT: [char; 28] = [' ', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
@@ -156,32 +158,26 @@ fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> Vec<Vec<ch
 fn get_noise(_py: Python, text:&str, method:&str, prob:f64)-> PyResult<String>{
     let mut rng = rand::thread_rng();
 
-    //dis-assembling
-    let phonetics = ["palatalization","linking","liquidization","nasalization","assimilation"];
-    let mut output = vec![];
-    for ch in text.to_string().chars(){
-        output.push(disassemble(ch));
-    }
+    let mut output = text.chars().map(|x| disassemble(x)).collect::<Vec<Vec<char>>>();
 
     let string_output = match method {
         "disattach-letters" => output.iter().map(
-        |x| match x{
-            x if rng.gen() < prob => disattach_letters(x),
-            x => assemble(x),
-        }).collect::<Vec<String>>(),
+            |x| match x{
+                x if rng.gen() < prob => disattach_letters(x),
+                x => assemble(x)}).collect::<Vec<String>>(),
 
         "change-vowels" => output.iter().map(
-        |x| match x {
-            x if rng.gen() < prob => change_vowels(x),
-            x => assemble(x),
-        }).collect::<Vec<String>>(),
+            |x| match x {
+                x if rng.gen() < prob => change_vowels(x),
+                x => assemble(x)}).collect::<Vec<String>>(),
 
-        x if phonetics.contains(&method) =>  & phonetic_change(output, &method, prob)
-                                                        .iter().map(|x| assemble(x))
-                                                        .collect::<Vec<char>>(),
+        x if PHONETICS.contains(&method) =>  & phonetic_change(output, &method, prob)
+            .iter().map(|x| assemble(x)).collect::<Vec<char>>(),
 
         _ => & output.iter().map(|x| assemble(x))
+
     };
+
     Ok(string_output.join(""))
 }
 
