@@ -24,6 +24,7 @@ static LIQUIDIZATION_EXPT: phf::Map<&str, &str> = phf_map! {"ㄴㄹㅕㄱ"=> "�
 static NASALIZATION: phf::Map<&str, &str> = phf_map! {"ㅂㅁ"=> "ㅁㅁ", "ㄷㄴ"=> "ㄴㄴ", "ㄱㅁ"=> "ㅇㅁ", "ㄱㄴ"=> "ㅇㄴ", "ㅇㄹ"=> "ㅇㄴ", "ㅁㄹ"=> "ㅁㄴ", "ㄲㄴ"=> "ㅇㄴ", "ㅂㄹ"=> "ㅁㄴ", "ㄱㄹ"=> "ㅇㄴ", "ㅊㄹ"=> "ㄴㄴ", "ㄺㄴ"=> "ㅇㄴ", "ㅍㄴ"=> "ㅁㄴ"};
 static ASSIMILATION: phf::Map<&str, &str> = phf_map! {"ㄺㄴ"=> "ㅇㄴ"};
 
+
 fn disassemble(ch:char) -> Vec<char>{
     let chn = ch as u32;
     if (chn < 44032)|(55203 < chn){
@@ -37,7 +38,8 @@ fn disassemble(ch:char) -> Vec<char>{
     vec![CONSONANT[c], VOWEL[v], FINAL_CONSONANT[fc]]
 }
 
-fn assemble(jamo_list:Vec<char>) -> char{
+
+fn assemble(jamo_list: &Vec<char>) -> char{
     if jamo_list[1..] == ['\0', '\0'] {
         jamo_list[0]
     } else{
@@ -50,7 +52,7 @@ fn assemble(jamo_list:Vec<char>) -> char{
 }
 
 
-fn disattach_letters(char_vec:Vec<char>)-> String{
+fn disattach_letters(char_vec: &Vec<char>) -> String{
     if char_vec[2] == ' ' && (!DISTACH_EXCEPTIONS.contains(&char_vec[1])){
         char_vec.iter().collect::<String>().trim().to_string()
     }else {
@@ -58,12 +60,12 @@ fn disattach_letters(char_vec:Vec<char>)-> String{
     }
 }
 
-fn change_vowels(char_vec:Vec<char>) -> String {
+fn change_vowels(char_vec:&Vec<char>) -> String {
     if char_vec[2] == ' ' && CHANGE_VOWELS.contains_key(&char_vec[1]){
         let changed = CHANGE_VOWELS.get(&char_vec[1]).unwrap().to_ascii_lowercase();
-        return assemble(vec![char_vec[0], changed, char_vec[2]]).to_string();
+        return assemble(&vec![char_vec[0], changed, char_vec[2]]).to_string();
     }else{
-        return assemble(char_vec).to_string();
+        return assemble(&char_vec).to_string();
     }
 }
 
@@ -80,7 +82,7 @@ fn patalization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
 
 
 fn linking(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
-    if LINKING.contains_key(&fc[2].to_string()) && LINKING_WORD.contains(&assemble(vec![nc[0],nc[1],nc[2]])){
+    if LINKING.contains_key(&fc[2].to_string()) && LINKING_WORD.contains(&assemble(&vec![nc[0],nc[1],nc[2]])){
         let v = LINKING.get(&fc[2].to_string()).unwrap().chars().collect::<Vec<char>>();
         (vec![fc[0],fc[1],v[0]],vec![v[1], fc[1],fc[2]])
     }else{
@@ -109,7 +111,7 @@ fn nasalization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
         let v = NASALIZATION.get(&key).unwrap().chars().collect::<Vec<char>>();
         (vec![fc[0],fc[1],v[0]], vec![v[1],nc[1],nc[2]])
     }else{
-        (fc, nc)
+        (fc, nc).to_owned()
     }
 
 }
@@ -122,7 +124,7 @@ fn assimilation(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
         let v = ASSIMILATION.get(&key).unwrap().chars().collect::<Vec<char>>();
         (vec![fc[0],fc[1],v[0]], vec![v[1],nc[1],nc[2]])
     }else{
-        (fc, nc)
+        (fc, nc).to_owned()
     }
 }
 
@@ -135,14 +137,15 @@ fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> Vec<Vec<ch
         if p < prob {
             let func = match method{
                 "patalization" => patalization,
-                "linking" => linking,
                 "liquidization" => liquidization,
                 "nasalization" => nasalization,
-                "assimilation" => assimilation
-            }
-            let (a, b) = func(&mut_text[i], &mut_text[i + 1])
-            mut_text[i] = a
-            mut_text[i + 1] = b
+                "assimilation" => assimilation,
+                "linking" => linking,
+                _ => {}
+            };
+            let (a, b) = func(&mut_text[i], &mut_text[i + 1]);
+            mut_text[i] = a;
+            mut_text[i + 1] = b;
         }
     }
     mut_text
@@ -159,14 +162,26 @@ fn get_noise(_py: Python, text:&str, method:&str, prob:f64)-> PyResult<String>{
     for ch in text.to_string().chars(){
         output.push(disassemble(ch));
     }
-    let string_output = match method {
-    "disattach-letters" => output.iter().map(|x| match { rng.gen() < prob => disattach_letters(x), _ => assemble(x).to_string()}).collect::<Vec<_>>(),
-    "change-vowels" => output.iter().map(|x| match { rng.gen() < prob => change_vowels(x), _ => assemble(x).to_string()}).collect::<Vec<_>>(),
-    if phonetics.contains(&method) =>  phonetic_change(output, &method, prob).iter().map(|x| assemble(x).to_string()).collect::<Vec<_>>(),
-    _ => output.iter().map(|x|assemble(x).to_string())
-    }
 
-    //assembling
+    let string_output = match method {
+        "disattach-letters" => output.iter().map(
+        |x| match x{
+            x if rng.gen() < prob => disattach_letters(x),
+            x => assemble(x),
+        }).collect::<Vec<String>>(),
+
+        "change-vowels" => output.iter().map(
+        |x| match x {
+            x if rng.gen() < prob => change_vowels(x),
+            x => assemble(x),
+        }).collect::<Vec<String>>(),
+
+        x if phonetics.contains(&method) =>  & phonetic_change(output, &method, prob)
+                                                        .iter().map(|x| assemble(x))
+                                                        .collect::<Vec<char>>(),
+
+        _ => & output.iter().map(|x| assemble(x))
+    };
     Ok(string_output.join(""))
 }
 
