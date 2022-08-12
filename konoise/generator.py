@@ -36,7 +36,7 @@ class NoiseGenerator(object):
         self.delis = {
             'total': ('', ''),
             'sentence': (split_sentence,' '),
-            'newline': (lambda s: s.split('\n'),'\n')
+            'newline': (lambda s: s.split('\n'), '\n')
         }
 
     def generate(self, text, methods='disattach-letters', prob=1., delimeter='newline', verbose=1) -> str:
