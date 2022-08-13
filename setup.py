@@ -25,7 +25,7 @@ setup(
     install_requires=["tqdm"],
 
     packages=["konoise"],
-
+    package_data={"konoise": ["data/endwords.json"]},
     classifiers=[
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
