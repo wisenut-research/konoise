@@ -1,28 +1,29 @@
+
+import random
+from .spliter import NoSplit, SentenceSplit, ParagraphSplit
 from .segments import change_vowels, disattach_letters
 from .phoneme import phonetic_change
 from .yamin import yamin_jungum
-
-from multiprocessing import Pool, cpu_count
-from tqdm import tqdm
-
-import re
-import random
 from functools import partial
+from typing import Union, Optional,List
+from tqdm import tqdm
+from .rust_generator import get_noise
 
+RUST_AVAIL_METHODS = {
+    "patalization", "liquidization", "nasalization", "assimilation", "linking", "disattach-letters", "change-vowels"
+}
 
-def split_sentence(text):
-    return re.split('(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', text)
+class NoiseGenerator:
+    def __init__(self):
+        self.rng = random.SystemRandom()
 
+        self.spliter = {
+            'no': NoSplit(),
+            'sentence': SentenceSplit(),
+            'paragraph': ParagraphSplit()
+        }
 
-def _generate(text, candidates, rng, prob):
-    return rng.choice(candidates)(text, prob=prob)
-
-
-class NoiseGenerator(object):
-    def __init__(self, num_cores=None):
-        self.rng = random.Random()
-        self.pooler = Pool(processes=num_cores if num_cores else cpu_count())
-        self.functions = {
+        self.noiser = {
             'disattach-letters': disattach_letters,
             'change-vowels': change_vowels,
             'palatalization': partial(phonetic_change, func='palatalization'),
@@ -33,41 +34,42 @@ class NoiseGenerator(object):
             'yamin-jungum': yamin_jungum,
         }
 
-        self.delis = {
-            'total': ('', ''),
-            'sentence': (split_sentence,' '),
-            'newline': (lambda s: s.split('\n'), '\n')
-        }
-
-    def generate(self, text, methods='disattach-letters', prob=1., delimeter='newline', verbose=1) -> str:
-        assert delimeter in self.delis, 'Not Defined Delimeter!'
-        if isinstance(methods, str):
-            methods = methods.split(',')
-            if 'all' in methods:
-                methods = list(self.functions.keys())
-
-        candidates = [self.functions[f] for f in methods if self.functions]
-        self.rng.shuffle(candidates)
-
-        if not candidates:
-            raise KeyError(f"There are no funtions available(Functions:{','.join(list(self.functions.keys()))})")
-
-        text = self.delis[delimeter][0](text)
-        new_text = self.run_multiprocessing(partial(_generate, candidates=candidates, rng=self.rng, prob=prob), text, verbose=verbose)
-        n_iters=0
-        while text == new_text:
-            if 10 < n_iters:
-                break
-            for candidate in candidates:
-                new_text = self.run_multiprocessing(partial(_generate, candidates=[candidate], rng=self.rng, prob=prob), text, verbose=0)
-                if text != new_text:
-                    break
-            n_iters+=1
-        return self.delis[delimeter][1].join(new_text)
-
-    def run_multiprocessing(self, func, argument_list, verbose=1):
-        if verbose:
-            return [r for r in tqdm(self.pooler.imap(
-                func=func, iterable=argument_list), total=len(argument_list))]
+    def get_generate_function(self, methods, prob):
+        if len(methods) == 1:
+            func = methods[0]
+            def generate_function(text):
+                return func(text)
         else:
-            return [r for r in self.pooler.imap(func=func, iterable=argument_list)]
+            def generate_function(text):
+                return self.rng.choice(methods(text))
+        return generate_function
+
+    def generate(self,
+                 text: str,
+                 methods: str = 'disattach-letters',
+                 prob: float = 0.5,
+                 delimiter: str = 'sentence',
+                 use_rust_tokenizer=False) -> str:
+
+        methods = methods.split(',')
+        if use_rust_tokenizer:
+            methods = [partial(get_noise, method=m, prob=prob) if m in RUST_AVAIL_METHODS
+                       else partial(self.noiser[m], prob=prob) for m in methods if m in self.noiser]
+        else:
+            methods = [partial(self.noiser[m], prob=prob) for m in methods if m in self.noiser]
+        spliter = self.spliter.get(delimiter)
+
+        assert spliter is not None, "'delimiter' should be one of 'no', 'sentence', and 'paragraph'."
+        assert len(methods) > 0, f"method should be one of {list(self.noiser.keys())}."
+
+        splited = spliter.split(text)
+        generate_function = self.get_generate_function(methods, prob)
+
+        return list(map(generate_function, splited))
+
+    def batch_generate(self,
+                       text: List[str],
+                       methods: str = 'disattach-letters',
+                       prob: float = 0.5,
+                       delimiter: str = 'sentence'):
+        pass
