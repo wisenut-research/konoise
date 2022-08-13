@@ -1,0 +1,6 @@
+build/
+dist/
+konoise.egg-info/
+__pycache__/
+wheelhouse/
+target/
