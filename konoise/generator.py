@@ -7,8 +7,8 @@ from .yamin import yamin_jungum
 from functools import partial
 from typing import Union, Optional,List
 from tqdm import tqdm
-from .rust_generator import get_noise
-from multiprocessing import cpu_count, Pool
+from .rust_generator import get_noise, get_noise_batch
+from multiprocessing import cpu_count, Process
 RUST_AVAIL_METHODS = {
     "patalization", "liquidization", "nasalization", "assimilation", "linking", "disattach-letters", "change-vowels"
 }
@@ -49,7 +49,7 @@ class NoiseGenerator:
                  methods: str = 'disattach-letters',
                  prob: float = 0.5,
                  delimiter: str = 'sentence',
-                 use_rust_tokenizer=False) -> str:
+                 use_rust_tokenizer=True) -> str:
 
         methods = methods.split(',')
         if use_rust_tokenizer:
@@ -71,11 +71,16 @@ class NoiseGenerator:
                        texts: List[str],
                        methods: str = 'disattach-letters',
                        prob: float = 0.5,
-                       delimiter: str = 'sentence'):
+                       delimiter: str = 'sentence',
+                       use_rust_tokenizer=True):
 
-
-        for i in range(1000):
-            p = mp.Process(target=self.do_something, args=(i,))
-            processes.append(p)
-
-        [x.start() for x in processes]
+        if use_rust_tokenizer:
+            return get_noise_batch(texts, methods, prob,)
+        else:
+            processes = [
+                Process(
+                    target=self.generate,
+                    args=(text,methods, prob, delimiter, use_rust_tokenizer))
+                for text in texts
+            ]
+            return [x.start() for x in processes]
