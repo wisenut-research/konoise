@@ -155,7 +155,7 @@ fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> Vec<Vec<ch
     mut_text
 }
 
-fn get_noise_output(text:&str, methods:&str, prob:f64) -> String{
+fn get_noise_output(text:&str, method:&str, prob:f64) -> String{
     let mut rng = rand::thread_rng();
     let output = text.chars().map(|x| disassemble(x)).collect::<Vec<Vec<char>>>();
 
@@ -185,7 +185,7 @@ fn get_noise(_py: Python, text:&str, method:&str, prob:f64)-> PyResult<String>{
 
 #[pyfunction]
 fn get_noise_batch(_py: Python, texts:Vec<&str>, method:&str, prob:f64)-> PyResult<Vec<String>>{
-    Ok(texts.par_iter().map(|&x|get_noise_output(x, method, prob)).collect::<Vec<String>>())
+    Ok(texts.par_iter().map(|&x| get_noise_output(x, method, prob)).collect::<Vec<String>>())
 }
 
 

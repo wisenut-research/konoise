@@ -80,10 +80,4 @@ class NoiseGenerator:
         if use_rust_tokenizer:
             return []
 #            return get_noise_batch(texts, methods, prob)
-        else:
-            processes = []
-            for text in texts:
-                p = Process(target=self.generate, args=(text, methods, prob, delimiter, use_rust_tokenizer))
-                processes.append(p)
-
-            return [p.start() for p in processes]
+        return []
