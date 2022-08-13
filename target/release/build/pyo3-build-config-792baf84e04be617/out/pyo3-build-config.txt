@@ -1,0 +1,10 @@
+implementation=CPython
+version=3.7
+shared=false
+abi3=false
+lib_name=python3.7m
+lib_dir=/opt/_internal/cpython-3.7.13/lib
+executable=/usr/local/bin/python3.7
+pointer_width=64
+build_flags=
+suppress_build_script_link_lines=false
