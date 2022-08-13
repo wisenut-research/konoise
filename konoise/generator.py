@@ -81,10 +81,9 @@ class NoiseGenerator:
             return []
 #            return get_noise_batch(texts, methods, prob)
         else:
-            processes = [
-                Process(
-                    target=self.generate,
-                    args=(text,methods, prob, delimiter, use_rust_tokenizer))
-                for text in texts
-            ]
-            return [x.start() for x in processes]
+            processes = []
+            for text in texts:
+                p = Process(target=self.generate, args=(text, methods, prob, delimiter, use_rust_tokenizer))
+                processes.append(p)
+
+            return [p.start() for p in processes]
