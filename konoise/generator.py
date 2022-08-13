@@ -7,7 +7,10 @@ from .yamin import yamin_jungum
 from functools import partial
 from typing import Union, Optional,List
 from tqdm import tqdm
-from .rust_generator import get_noise, get_noise_batch
+from .rust_generator import (
+    get_noise,
+#    get_noise_batch
+)
 from multiprocessing import cpu_count, Process
 RUST_AVAIL_METHODS = {
     "patalization", "liquidization", "nasalization", "assimilation", "linking", "disattach-letters", "change-vowels"
@@ -75,7 +78,8 @@ class NoiseGenerator:
                        use_rust_tokenizer=True):
 
         if use_rust_tokenizer:
-            return get_noise_batch(texts, methods, prob,)
+            return []
+#            return get_noise_batch(texts, methods, prob)
         else:
             processes = [
                 Process(
