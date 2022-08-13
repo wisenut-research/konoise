@@ -1,2 +1,0 @@
-<jemalloc>: MADV_DONTNEED does not work (memset will be used instead)
-<jemalloc>: (This is the expected behaviour if you are running under QEMU)
