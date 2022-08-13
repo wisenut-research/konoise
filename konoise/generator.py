@@ -8,7 +8,7 @@ from functools import partial
 from typing import Union, Optional,List
 from tqdm import tqdm
 from .rust_generator import get_noise
-
+from multiprocessing import cpu_count, Pool
 RUST_AVAIL_METHODS = {
     "patalization", "liquidization", "nasalization", "assimilation", "linking", "disattach-letters", "change-vowels"
 }
@@ -68,8 +68,14 @@ class NoiseGenerator:
         return list(map(generate_function, splited))
 
     def batch_generate(self,
-                       text: List[str],
+                       texts: List[str],
                        methods: str = 'disattach-letters',
                        prob: float = 0.5,
                        delimiter: str = 'sentence'):
-        pass
+
+
+        for i in range(1000):
+            p = mp.Process(target=self.do_something, args=(i,))
+            processes.append(p)
+
+        [x.start() for x in processes]

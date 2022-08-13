@@ -13,8 +13,8 @@ from konoise import NoiseGenerator
 text = "행복한 가정은 모두가 닮았지만, 불행한 가정은 모두 저마다의 이유로 불행하다."
 generator = NoiseGenerator(num_cores=8)
 text = generator.generate(text, methods='disattach-letters', prob=1., delimeter='newline', verbose=1)
-print(text)
->> 행복한 ㄱㅏ정은 모두ㄱㅏ 닮았ㅈㅣ만, 불행한 ㄱㅏ정은 모두 ㅈㅓㅁㅏㄷㅏ의 ㅇㅣ유로 불행ㅎㅏㄷㅏ.
+text
+>>> 행복한 ㄱㅏ정은 모두ㄱㅏ 닮았ㅈㅣ만, 불행한 ㄱㅏ정은 모두 ㅈㅓㅁㅏㄷㅏ의 ㅇㅣ유로 불행ㅎㅏㄷㅏ.
 ```
 -- text: 노이즈를 생성할 텍스트입니다.
 -- methods: 노이즈 생성 방법입니다(사용가능한 방법들은 아래를 참고, default:).

@@ -13,6 +13,7 @@ konoise/generator.py
 konoise/lib.rs
 konoise/phoneme.py
 konoise/segments.py
+konoise/spliter.py
 konoise/utils.py
 konoise/yamin.py
 konoise.egg-info/PKG-INFO
@@ -21,3 +22,4 @@ konoise.egg-info/dependency_links.txt
 konoise.egg-info/not-zip-safe
 konoise.egg-info/requires.txt
 konoise.egg-info/top_level.txt
+konoise/data/endwords.json

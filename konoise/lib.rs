@@ -1,9 +1,10 @@
 use phf::phf_map;
 use rand::prelude::*;
-
 extern crate pyo3;
 use pyo3::prelude::*;
+use rayon::prelude::*;
 
+static mut rng: ThreadRng = rand::thread_rng();
 
 static PHONETICS: [&str; 5] = ["palatalization","linking","liquidization","nasalization","assimilation"];
 
@@ -134,7 +135,6 @@ fn assimilation(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
 
 
 fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> Vec<Vec<char>> {
-    let mut rng = rand::thread_rng();
     let mut mut_text = text_vec.clone();
     for i in 0..(mut_text.len()-1){
         let p: f64 = rng.gen();
@@ -155,30 +155,36 @@ fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> Vec<Vec<ch
     mut_text
 }
 
-
-#[pyfunction]
-fn get_noise(_py: Python, text:&str, method:&str, prob:f64)-> PyResult<String>{
-    let mut rng = rand::thread_rng();
-
+fn get_noise_output(text:&str) -> String{
     let output = text.chars().map(|x| disassemble(x)).collect::<Vec<Vec<char>>>();
 
-    let string_output = match method {
+    match method {
         "disattach-letters" => output.iter().map(
-            |x| match x{
+            |x| match x {
                 x if rng.gen::<f64>() < prob => disattach_letters(x),
-                x => assemble(x).to_string()}).collect::<Vec<String>>(),
+                x => assemble(x).to_string()
+            }).collect::<Vec<String>>(),
 
         "change-vowels" => output.iter().map(
             |x| match x {
                 x if rng.gen::<f64>() < prob => change_vowels(x).to_string(),
-                x => assemble(x).to_string()}).collect::<Vec<String>>(),
+                x => assemble(x).to_string()
+            }).collect::<Vec<String>>(),
 
         _x if PHONETICS.contains(&method) => phonetic_change(output, &method, prob).iter().map(|x| assemble(x).to_string()).collect::<Vec<String>>(),
 
         _ => output.iter().map(|x| assemble(x).to_string()).collect::<Vec<String>>()
+    }.iter().map(|x| x.to_string()).collect::<Vec<String>>().join("")
+}
 
-    };
-    Ok(string_output.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(""))
+#[pyfunction]
+fn get_noise(_py: Python, text:&str, method:&str, prob:f64)-> PyResult<String>{
+    Ok(get_noise_output(text))
+}
+
+#[pyfunction]
+fn get_noise_batch(_py: Python, texts:Vec<&str>, method:&str, prob:f64)-> PyResult<Vec<String>>{
+    Ok(texts.par_iter().map(|&x|get_noise_output(x)).collect::<Vec<String>>())
 }
 
 
