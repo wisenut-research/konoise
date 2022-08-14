@@ -1,18 +1,18 @@
 # 한국어 노이즈 추가 (konoise)
 한국어 문서에 노이즈를 추가하는 것을 돕는 파이썬 라이브러리입니다(Library for generating the noise in Korean).
 
-## 설치 방법
+### 설치 방법
 ```
 $ pip install konoise
 ```
 
-## 실행 방법
+### 실행 방법
 ```
 from konoise import NoiseGenerator
 
 text = "행복한 가정은 모두가 닮았지만, 불행한 가정은 모두 저마다의 이유로 불행하다."
 generator = NoiseGenerator(num_cores=8)
-text = generator.generate(text, methods='disattach-letters', prob=1., delimeter='newline', verbose=1)
+text = generator.generate(text, methods='disattach-letters', prob=1., delimeter='newline')
 text
 >>> 행복한 ㄱㅏ정은 모두ㄱㅏ 닮았ㅈㅣ만, 불행한 ㄱㅏ정은 모두 ㅈㅓㅁㅏㄷㅏ의 ㅇㅣ유로 불행ㅎㅏㄷㅏ.
 ```
@@ -20,9 +20,9 @@ text
 -- methods: 노이즈 생성 방법입니다(사용가능한 방법들은 아래를 참고, default:).
 -- prob: 노이즈를 생성하는 확률입니다(delimeter별로 적용, 0-1사이의 실수).
 -- delimeter: 노이즈 적용, 멀티 프로세싱 적용의 기준이 되는 단위 입니다('total':전체,'newline':개행(\n),'sentence':문장).
--- verbose: 로그 표시에 대한 변수입니다(0:표시 안함, 1: 표시).
+-- use_rust_tokenizer: rust 기반 노이즈 생성기를 사용 할 지를 결정합니다.
 
-## 노이즈 생성 방법
+### 노이즈 생성 방법
 노이즈를 생성하는 방법은 총 6가지가 구현되어 있습니다.
 ```
 'disattach-letters': disattach_letters,
@@ -35,7 +35,7 @@ text
 'yamin-jungum': yamin_jungum
 ```
 - 쉼표(,)로 구분하여 여러 방법들을 같이 사용할 수 있습니다.
-- 전체 방법을 사용하려면 methods에 'all'을 입력합니다.
+
 
 **[disattach-letters]** 자모 분리(alphabet separation)에 의한 노이즈 추가 방법. 글자의 자음과 모음을 분리합니다. 단, 가독성을 위해 종성이 없으며 중성이  'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅗ' 가 아닐 경우 실행합니다(예: 안녕하세요 > 안녕ㅎㅏㅅㅔ요)
 
@@ -77,46 +77,27 @@ text
 
 
 ## Noise Generator in Rust
-
-```
-from konoise import rust_generator
-
-text = "행복한 가정은 모두가 닮았지만, 불행한 가정은 모두 저마다의 이유로 불행하다."
-rust_generator.get_noise(text, 'disattach-letters', 1) # provide the same methods(except yamin-jungum)
->> '행복한 ㄱㅏ정은 모두ㄱㅏ 닮았ㅈㅣ만, 불행한 ㄱㅏ정은 모두 ㅈㅓㅁㅏㄷㅏ의 ㅇㅣ유로 불행ㅎㅏㄷㅏ.'
-```
-프로그래밍 언어 중 하나인 Rust로 만들어진 generator이며, 사용방법은 파이썬 버전과 같습니다('yamin-jungum'은 제외).
-
-    * Rust vs. Python
+1. 노이즈 생성기 내에서 사용
     ```
-
-    import requests
-
-    # Naver Sentiment Movie Corpus의 학습 데이터셋(텍스트)을 대상으로 실험하였습니다.
-    NSMC = 'https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt'
-    with requests.get() as r:
-        target = r.text
-
-
-    import time
-    from konoise import rust_generator, NoiseGenerator
-
-    # Rust
-    start = time.time()
-    for i in range(10):
-        rust_generator.get_noise(contents, 'disattach-letters', 1)
-    print(f"Average Times: {(time.time()-start)/10):2f} s",
-    >> Average Times: 2.13 s
-
-    # Python
-    generator = NoiseGenerator()
-    start = time.time()
-    for i in range(10):
-        generator.generate(contents, methods='disattach-letters', prob=1, delimeter='newline', verbose=0)
-    print((time.time()-start)/10)
-    >> Average Times: 48.20 s
-
-    # Rust is faster than Python on the 'disattach-letters' methods(95.58% reduced)
+    from konoise import NoiseGenerator
+    
+    # provide the same methods(except yamin-jungum)
+    # if you insert the string 'yamin-jungum', 
+    # it might be applied with the python generator 
+    # even if 'use_rust_tokenizer' is True
+    
+    text = "행복한 가정은 모두가 닮았지만, 불행한 가정은 모두 저마다의 이유로 불행하다."
+    genertor = NoiseGenerator()
+    genertor.generate(text, 'disattach-letters', 0.5, use_rust_tokenizer=True) 
+    >>> '행복한 ㄱㅏ정은 모두ㄱㅏ 닮았ㅈㅣ만, 불행한 ㄱㅏ정은 모두 ㅈㅓㅁㅏㄷㅏ의 ㅇㅣ유로 불행ㅎㅏㄷㅏ.'
+    ```
+2. rust 모듈을 직접 사용
+    ```
+    from konoise import rust_generator
+    
+    text = "행복한 가정은 모두가 닮았지만, 불행한 가정은 모두 저마다의 이유로 불행하다."
+    rust_generator.get_noise(text, 'disattach-letters', 0.5) # provide the same methods(except yamin-jungum)
+    >>> '행복한 ㄱㅏ정은 모두ㄱㅏ 닮았ㅈㅣ만, 불행한 ㄱㅏ정은 모두 ㅈㅓㅁㅏㄷㅏ의 ㅇㅣ유로 불행ㅎㅏㄷㅏ.'
     ```
 
 
