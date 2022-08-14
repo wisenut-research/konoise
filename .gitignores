@@ -4,3 +4,4 @@ konoise.egg-info/*
 __pycache__/*
 wheelhouse/*
 target/*
+.idea
