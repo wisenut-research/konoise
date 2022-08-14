@@ -16,15 +16,15 @@ text = generator.generate(text, methods='disattach-letters', prob=1., delimeter=
 text
 >>> 행복한 ㄱㅏ정은 모두ㄱㅏ 닮았ㅈㅣ만, 불행한 ㄱㅏ정은 모두 ㅈㅓㅁㅏㄷㅏ의 ㅇㅣ유로 불행ㅎㅏㄷㅏ.
 ```
--- text: 노이즈를 생성할 텍스트입니다.
+- **text**: 노이즈를 생성할 텍스트입니다.
 
--- methods: 노이즈 생성 방법입니다(사용가능한 방법들은 아래를 참고, default:).
+- **methods**: 노이즈 생성 방법입니다(사용가능한 방법들은 아래를 참고, default:).
 
--- prob: 노이즈를 생성하는 확률입니다(delimeter별로 적용, 0-1사이의 실수).
+- **prob**: 노이즈를 생성하는 확률입니다(delimeter별로 적용, 0-1사이의 실수).
 
--- delimeter: 노이즈 적용, 멀티 프로세싱 적용의 기준이 되는 단위 입니다('total':전체,'newline':개행(\n),'sentence':문장).
+- **delimeter**: 노이즈 적용, 멀티 프로세싱 적용의 기준이 되는 단위 입니다('total':전체,'newline':개행(\n),'sentence':문장).
 
--- use_rust_tokenizer: rust 기반 노이즈 생성기를 사용 할 지를 결정합니다.
+- **use_rust_tokenizer**: rust 기반 노이즈 생성기를 사용 할 지를 결정합니다.
 
 ### 노이즈 생성 방법
 노이즈를 생성하는 방법은 총 6가지가 구현되어 있습니다.
