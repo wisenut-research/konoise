@@ -4,7 +4,7 @@
 
 ### 지원
 - manylinux (lastest version, 1.7.5)
-- windows, macOS (supported old version)
+- windows, macOS (old version)
 
 
 ### 설치 방법
