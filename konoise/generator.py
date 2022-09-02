@@ -4,16 +4,16 @@ from .segments import change_vowels, disattach_letters
 from .phoneme import phonetic_change
 from .yamin import yamin_jungum
 from functools import partial
-from typing import Union, Optional,List
+from typing import Union, Optional, List
 from tqdm import tqdm
 
 from multiprocessing import cpu_count, Process
 RUST_AVAIL_METHODS = {
-    "patalization", "liquidization", "nasalization", "assimilation", "linking", "disattach-letters", "change-vowels"
+    "palatalization", "liquidization", "nasalization", "assimilation", "linking", "disattach-letters", "change-vowels"
 }
 import platform
-if not platform.platform().lower().startswith(("windows", "darwin")):
-    from .rust_generator import *
+from .rust_generator import *
+
 
 class NoiseGenerator:
     def __init__(self):
@@ -77,6 +77,7 @@ class NoiseGenerator:
                        prob: float = 0.5,
                        delimiter: str = 'sentence',
                        use_rust_tokenizer=True):
+
         methods = methods.split(',')
         
         if use_rust_tokenizer:
