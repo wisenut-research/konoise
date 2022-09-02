@@ -15,8 +15,8 @@ static LINKING_WORD: [char; 8] = ['이', '을', '를', '은', '았', '었', '아
 
 static CHANGE_VOWELS: phf::Map<char, char> = phf_map! {'ㅏ' => 'ㅑ', 'ㅑ' => 'ㅏ', 'ㅓ' => 'ㅕ', 'ㅕ' => 'ㅓ', 'ㅗ' => 'ㅛ', 'ㅛ' => 'ㅗ', 'ㅜ' => 'ㅠ', 'ㅠ' => 'ㅜ'};
 
-static PATALIZATION1: phf::Map<char, char> = phf_map! {'ㄷ'=>'ㅈ', 'ㅌ'=>'ㅊ'};
-static PATALIZATION2: phf::Map<char, char> = phf_map! {'ㄷ'=>'ㅊ', 'ㄱ'=>'ㅋ'};
+static PALATALIZATION1: phf::Map<char, char> = phf_map! {'ㄷ'=>'ㅈ', 'ㅌ'=>'ㅊ'};
+static PALATALIZATION2: phf::Map<char, char> = phf_map! {'ㄷ'=>'ㅊ', 'ㄱ'=>'ㅋ'};
 
 static LINKING: phf::Map<&str, &str> = phf_map! { "ㄻ"=>"ㄹㅁ", "ㅄ"=>"ㅂㅆ","ㄳ"=>"ㄱㅅ", "ㄽ"=>"ㄹㅅ", "ㅊ"=>" ㅊ", "ㅂ"=>" ㅂ", "ㅍ"=>" ㅂ", "ㄷ"=>" ㄹ", "ㄹ"=>" ㄹ", "ㄹㅎ"=>" ㄹ"};
 
@@ -72,11 +72,11 @@ fn change_vowels(char_vec:&Vec<char>) -> String {
 }
 
 
-fn patalization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
-    if PATALIZATION1.contains_key(&fc[2]) && nc[..2]==['ㅇ', 'ㅣ'] {
-        (vec![fc[0], fc[1],' '], vec![PATALIZATION1.get(&fc[2]).unwrap().clone(),nc[1], nc[2]])
-    }else if PATALIZATION2.contains_key(&fc[2]) && (nc[0]=='ㅎ'){
-        (vec![fc[0],fc[1],' '], vec![PATALIZATION2.get(&fc[2]).unwrap().clone(), nc[1], nc[2]])
+fn palatalization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
+    if PALATALIZATION1.contains_key(&fc[2]) && nc[..2]==['ㅇ', 'ㅣ'] {
+        (vec![fc[0], fc[1],' '], vec![PALATALIZATION1.get(&fc[2]).unwrap().clone(),nc[1], nc[2]])
+    }else if PALATALIZATION2.contains_key(&fc[2]) && (nc[0]=='ㅎ'){
+        (vec![fc[0],fc[1],' '], vec![PALATALIZATION2.get(&fc[2]).unwrap().clone(), nc[1], nc[2]])
     }else{
         (fc.clone(), nc.clone())
     }
@@ -110,7 +110,6 @@ fn liquidization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
 fn nasalization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
     let mut key = fc[2].to_string();
     key.push_str(&nc[0].to_string());
-
     if NASALIZATION.contains_key(&key) {
         let v = NASALIZATION.get(&key).unwrap().chars().collect::<Vec<char>>();
         (vec![fc[0],fc[1],v[0]], vec![v[1],nc[1],nc[2]])
@@ -140,7 +139,7 @@ fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> Vec<Vec<ch
         let p: f64 = rng.gen();
         if p < prob {
             let func = match method{
-                "patalization" => patalization,
+                "palatalization" => palatalization,
                 "liquidization" => liquidization,
                 "nasalization" => nasalization,
                 "assimilation" => assimilation,

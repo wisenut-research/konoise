@@ -6,12 +6,14 @@ from .yamin import yamin_jungum
 from functools import partial
 from typing import Union, Optional,List
 from tqdm import tqdm
-from .rust_generator import *
 
 from multiprocessing import cpu_count, Process
 RUST_AVAIL_METHODS = {
     "patalization", "liquidization", "nasalization", "assimilation", "linking", "disattach-letters", "change-vowels"
 }
+import platform
+if not platform.platform().lower().startswith(("windows", "darwin")):
+    from .rust_generator import *
 
 class NoiseGenerator:
     def __init__(self):
@@ -52,11 +54,13 @@ class NoiseGenerator:
                  use_rust_tokenizer=True) -> str:
 
         methods = methods.split(',')
+
         if use_rust_tokenizer:
             methods = [partial(get_noise, method=m, prob=prob) if m in RUST_AVAIL_METHODS
                        else partial(self.noiser[m], prob=prob) for m in methods if m in self.noiser]
         else:
             methods = [partial(self.noiser[m], prob=prob) for m in methods if m in self.noiser]
+
         spliter = self.spliter.get(delimiter)
 
         assert spliter is not None, "'delimiter' should be one of 'no', 'sentence', and 'paragraph'."
@@ -88,4 +92,4 @@ class NoiseGenerator:
         splited = [unit for text in texts for unit in spliter.split(text)]
         generate_function = self.get_generate_function(methods, prob)
         
-        return generate_function(splited) if use_rust_tokenizer else list(map(generate_function,splited))
+        return generate_function(splited) if use_rust_tokenizer else list(map(generate_function, splited))
