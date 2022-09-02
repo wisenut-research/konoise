@@ -100,7 +100,7 @@ fn liquidization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
         let v = LIQUIDIZATION_EXPT.get(&key.to_string()).unwrap().chars().collect::<Vec<char>>();
         (vec![fc[0],fc[1], v[0]], vec![v[1], fc[1],fc[2]])
     } else if LIQUIDIZATION.contains_key(&[fc[2],nc[0]].iter().collect::<String>()){
-        let v = LIQUIDIZATION_EXPT.get(&[fc[2],nc[0]].iter().collect::<String>()).unwrap().chars().collect::<Vec<char>>();
+        let v = LIQUIDIZATION.get(&[fc[2],nc[0]].iter().collect::<String>()).unwrap().chars().collect::<Vec<char>>();
         (vec![fc[0],fc[1],v[0]], vec![v[1],fc[1],fc[2]])
     } else {
         (nfc, nnc)
