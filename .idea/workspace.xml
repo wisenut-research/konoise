@@ -7,9 +7,7 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="086fe01a-dbd2-4118-8c1f-78b44dbf459e" name="변경" comment="fix liquidization">
-      <change beforePath="$PROJECT_DIR$/konoise/generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/konoise/generator.py" afterDir="false" />
-    </list>
+    <list default="true" id="086fe01a-dbd2-4118-8c1f-78b44dbf459e" name="변경" comment="fix liquidization" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -161,7 +159,7 @@
       <workItem from="1662120409011" duration="3751000" />
       <workItem from="1662163573725" duration="1473000" />
       <workItem from="1662165904728" duration="1942000" />
-      <workItem from="1662167896802" duration="2811000" />
+      <workItem from="1662167896802" duration="3652000" />
     </task>
     <task id="LOCAL-00001" summary="delete useless files">
       <created>1660447664077</created>
@@ -212,7 +210,28 @@
       <option name="project" value="LOCAL" />
       <updated>1662176104725</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="fix liquidization">
+      <created>1662176689291</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1662176689292</updated>
+    </task>
+    <task id="LOCAL-00009" summary="fix liquidization">
+      <created>1662176695184</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1662176695184</updated>
+    </task>
+    <task id="LOCAL-00010" summary="fix liquidization">
+      <created>1662176794224</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1662176794224</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -239,6 +258,8 @@
     <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/konoise$segments.coverage" NAME="segments 커버리지 결과" MODIFIED="1662176715808" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/konoise" />
     <SUITE FILE_PATH="coverage/konoise$generator.coverage" NAME="generator 커버리지 결과" MODIFIED="1662175551790" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/konoise" />
+    <SUITE FILE_PATH="coverage/konoise$test.coverage" NAME="test 커버리지 결과" MODIFIED="1662176724062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

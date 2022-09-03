@@ -1,3 +1,4 @@
+use std::iter::FromIterator;
 use phf::phf_map;
 use rand::prelude::*;
 extern crate pyo3;
