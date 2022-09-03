@@ -107,7 +107,6 @@ fn linking(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
     }
 }
 
-
 fn liquidization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
     let key = fc[2].to_string();
     let (nfc, nnc) = (fc.clone(),nc.clone());
@@ -145,8 +144,6 @@ fn assimilation(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
         (fc.clone(), nc.clone())
     }
 }
-
-
 
 fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> Vec<String> {
     let mut rng = rand::thread_rng();
@@ -208,7 +205,6 @@ fn get_noise(_py: Python, text:&str, method:&str, prob:f64)-> PyResult<String>{
 fn get_noise_batch(_py: Python, texts:Vec<&str>, method:&str, prob:f64)-> PyResult<Vec<String>>{
     Ok(texts.par_iter().map(|&x| get_noise_output(x, method, prob)).collect::<Vec<String>>())
 }
-
 
 #[pymodule]
 fn rust_generator(_py: Python, m: &PyModule) -> PyResult<()> {
