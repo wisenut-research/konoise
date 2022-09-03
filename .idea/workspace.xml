@@ -7,7 +7,11 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="086fe01a-dbd2-4118-8c1f-78b44dbf459e" name="변경" comment="fix liquidization" />
+    <list default="true" id="086fe01a-dbd2-4118-8c1f-78b44dbf459e" name="변경" comment="fix liquidization">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/konoise/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/konoise/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/konoise/yamin.py" beforeDir="false" afterPath="$PROJECT_DIR$/konoise/yamin.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -159,7 +163,7 @@
       <workItem from="1662120409011" duration="3751000" />
       <workItem from="1662163573725" duration="1473000" />
       <workItem from="1662165904728" duration="1942000" />
-      <workItem from="1662167896802" duration="3652000" />
+      <workItem from="1662167896802" duration="4479000" />
     </task>
     <task id="LOCAL-00001" summary="delete useless files">
       <created>1660447664077</created>
@@ -231,7 +235,14 @@
       <option name="project" value="LOCAL" />
       <updated>1662176794224</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="fix liquidization">
+      <created>1662177564390</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1662177564390</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
