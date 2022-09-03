@@ -1,14 +1,15 @@
 [package]
-name = "rust_generator"
+name = "konoise"
 version = "1.0.8."
 authors = ["psyche"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[[bin]]
+[lib]
 name = "rust_generator"
 path = "konoise/lib.rs"
+crate-type = ["cdylib"]
 
 
 [dependencies]

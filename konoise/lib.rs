@@ -26,8 +26,29 @@ static LIQUIDIZATION_EXPT: phf::Map<&str, &str> = phf_map! {"ㄴㄹㅕㄱ"=> "�
 static NASALIZATION: phf::Map<&str, &str> = phf_map! {"ㅂㅁ"=> "ㅁㅁ", "ㄷㄴ"=> "ㄴㄴ", "ㄱㅁ"=> "ㅇㅁ", "ㄱㄴ"=> "ㅇㄴ", "ㅇㄹ"=> "ㅇㄴ", "ㅁㄹ"=> "ㅁㄴ", "ㄲㄴ"=> "ㅇㄴ", "ㅂㄹ"=> "ㅁㄴ", "ㄱㄹ"=> "ㅇㄴ", "ㅊㄹ"=> "ㄴㄴ", "ㄺㄴ"=> "ㅇㄴ", "ㅍㄴ"=> "ㅁㄴ"};
 static ASSIMILATION: phf::Map<&str, &str> = phf_map! {"ㄺㄴ"=> "ㅇㄴ"};
 
+static YAMIN_JUNGUM: phf::Map<(char, char, char), (char, char, char)> = phf_map! {('ㄷ', 'ㅐ', ' ')=>('ㅁ', 'ㅓ', ' '), ('ㅁ', 'ㅕ', ' ')=>('ㄸ', 'ㅣ', ' '), ('ㄱ', 'ㅟ', ' ')=>('ㅋ', 'ㅓ', ' '), ('ㅍ', 'ㅏ', ' ')=>('ㄱ', 'ㅘ', ' '), ('ㅍ', 'ㅣ', ' ')=>('ㄲ', 'ㅢ', ' '), ('ㅇ', 'ㅠ', ' ')=>('ㅇ', 'ㅡ', 'ㄲ'), ('ㄱ', 'ㅜ', 'ㅅ')=>('ㄱ', 'ㅡ', 'ㅅ')};
 
-fn disassemble(ch:char) -> Vec<char>{
+
+/*
+def yamin_jungum(text, prob=0.5):
+    decomposed = [disassemble(t) for t in text]
+    replaced = []
+    for de in decomposed:
+        rep = de
+        if _cond_base(de, rng, prob):
+            if de in _dict_yamin:
+                rep = _dict_yamin[de]
+        replaced.append(rep)
+    return ''.join([assemble(r) for r in replaced])
+
+*/
+
+fn yamin_jungum(char_vec:Vec<char>) -> String {
+    char_vec
+}
+
+
+fn disassemble(ch: char) -> Vec<char>{
     let chn = ch as u32;
     if (chn < 44032)|(55203 < chn){
         return vec![ch, '\0', '\0'];
@@ -132,7 +153,8 @@ fn assimilation(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
 }
 
 
-fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> Vec<Vec<char>> {
+
+fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> String {
     let mut rng = rand::thread_rng();
     let mut mut_text = text_vec.clone();
     for i in 0..(mut_text.len()-1){
@@ -151,7 +173,7 @@ fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> Vec<Vec<ch
             mut_text[i + 1] = b;
         }
     }
-    mut_text
+    mut_text.iter().map(|x| assemble(x).to_string()).collect::<Vec<String>>()
 }
 
 fn get_noise_output(text:&str, method:&str, prob:f64) -> String{
@@ -171,7 +193,7 @@ fn get_noise_output(text:&str, method:&str, prob:f64) -> String{
                 x => assemble(x).to_string()
             }).collect::<Vec<String>>(),
 
-        _x if PHONETICS.contains(&method) => phonetic_change(output, &method, prob).iter().map(|x| assemble(x).to_string()).collect::<Vec<String>>(),
+        _x if PHONETICS.contains(&method) => phonetic_change(output, &method, prob),
 
         _ => output.iter().map(|x| assemble(x).to_string()).collect::<Vec<String>>()
     }.iter().map(|x| x.to_string()).collect::<Vec<String>>().join("")
