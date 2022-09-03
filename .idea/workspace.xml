@@ -9,7 +9,7 @@
   <component name="ChangeListManager">
     <list default="true" id="086fe01a-dbd2-4118-8c1f-78b44dbf459e" name="변경" comment="fix liquidization">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/konoise/generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/konoise/generator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/konoise/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/konoise/lib.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -42,7 +42,10 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
-    "settings.editor.selected.configurable": "language.rust.cargo.check"
+    "project.structure.last.edited": "프로젝트",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "language.rust.rustfmt"
   }
 }]]></component>
   <component name="RunManager" selected="Python.generator">
@@ -113,7 +116,8 @@
       <workItem from="1662111287342" duration="2901000" />
       <workItem from="1662120409011" duration="3751000" />
       <workItem from="1662163573725" duration="1473000" />
-      <workItem from="1662165904728" duration="778000" />
+      <workItem from="1662165904728" duration="1942000" />
+      <workItem from="1662167896802" duration="2294000" />
     </task>
     <task id="LOCAL-00001" summary="delete useless files">
       <created>1660447664077</created>
@@ -150,7 +154,14 @@
       <option name="project" value="LOCAL" />
       <updated>1662124157522</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="fix liquidization">
+      <created>1662166757995</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1662166757995</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -177,6 +188,6 @@
     <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/konoise$generator.coverage" NAME="generator 커버리지 결과" MODIFIED="1662166038863" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/konoise" />
+    <SUITE FILE_PATH="coverage/konoise$generator.coverage" NAME="generator 커버리지 결과" MODIFIED="1662175551790" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/konoise" />
   </component>
 </project>

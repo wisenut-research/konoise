@@ -5,7 +5,7 @@ use pyo3::prelude::*;
 use rayon::prelude::*;
 
 
-static PHONETICS: [&str; 5] = ["palatalization","linking","liquidization","nasalization","assimilation"];
+static PHONETICS: [&str; 5] = ["palatalization","linking", "liquidization", "nasalization", "assimilation"];
 
 static CONSONANT: [char; 19] = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
 static VOWEL: [char; 21] = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
@@ -26,25 +26,20 @@ static LIQUIDIZATION_EXPT: phf::Map<&str, &str> = phf_map! {"ㄴㄹㅕㄱ"=> "�
 static NASALIZATION: phf::Map<&str, &str> = phf_map! {"ㅂㅁ"=> "ㅁㅁ", "ㄷㄴ"=> "ㄴㄴ", "ㄱㅁ"=> "ㅇㅁ", "ㄱㄴ"=> "ㅇㄴ", "ㅇㄹ"=> "ㅇㄴ", "ㅁㄹ"=> "ㅁㄴ", "ㄲㄴ"=> "ㅇㄴ", "ㅂㄹ"=> "ㅁㄴ", "ㄱㄹ"=> "ㅇㄴ", "ㅊㄹ"=> "ㄴㄴ", "ㄺㄴ"=> "ㅇㄴ", "ㅍㄴ"=> "ㅁㄴ"};
 static ASSIMILATION: phf::Map<&str, &str> = phf_map! {"ㄺㄴ"=> "ㅇㄴ"};
 
-static YAMIN_JUNGUM: phf::Map<(char, char, char), (char, char, char)> = phf_map! {('ㄷ', 'ㅐ', ' ')=>('ㅁ', 'ㅓ', ' '), ('ㅁ', 'ㅕ', ' ')=>('ㄸ', 'ㅣ', ' '), ('ㄱ', 'ㅟ', ' ')=>('ㅋ', 'ㅓ', ' '), ('ㅍ', 'ㅏ', ' ')=>('ㄱ', 'ㅘ', ' '), ('ㅍ', 'ㅣ', ' ')=>('ㄲ', 'ㅢ', ' '), ('ㅇ', 'ㅠ', ' ')=>('ㅇ', 'ㅡ', 'ㄲ'), ('ㄱ', 'ㅜ', 'ㅅ')=>('ㄱ', 'ㅡ', 'ㅅ')};
+
+static YAMIN_JUNGUM: phf::Map<&str, &str> = phf_map! {
+    "ㄷㅐ "=> "ㅁㅓ ", "ㅁㅕ "=> "ㄸㅐ", "ㄱㅟ "=> "ㅋㅓ", "ㅍㅏ " => "ㄱㅘ",
+    "ㅍㅣ " => "ㄲㅢ ", "ㅇㅠ " => "ㅇㅡㄲ", "ㄱㅜㅅ" => "ㄱㅡㅊ"
+};
 
 
-/*
-def yamin_jungum(text, prob=0.5):
-    decomposed = [disassemble(t) for t in text]
-    replaced = []
-    for de in decomposed:
-        rep = de
-        if _cond_base(de, rng, prob):
-            if de in _dict_yamin:
-                rep = _dict_yamin[de]
-        replaced.append(rep)
-    return ''.join([assemble(r) for r in replaced])
-
-*/
-
-fn yamin_jungum(char_vec:Vec<char>) -> String {
-    char_vec
+fn yamin_jungum(char_vec:&Vec<char>) -> String {
+    if (char_vec[2] != '\0') && YAMIN_JUNGUM.contains_key(String::from_iter(char_vec.clone()).as_str()) {
+        let v = YAMIN_JUNGUM.get(String::from_iter(char_vec.clone()).as_str()).unwrap();
+        assemble(v.chars().collect::<Vec<char>>()).to_string()
+    }else{
+        assemble(char_vec.to_vec()).to_string()
+    }
 }
 
 
@@ -62,11 +57,10 @@ fn disassemble(ch: char) -> Vec<char>{
 }
 
 
-fn assemble(jamo_list: &Vec<char>) -> char{
+fn assemble(jamo_list: Vec<char>) -> char{
     if jamo_list[1..] == ['\0', '\0'] {
         jamo_list[0]
     } else{
-
         let c = CONSONANT.iter().position(|&r| r == jamo_list[0]).unwrap();
         let v = VOWEL.iter().position(|&r| r == jamo_list[1]).unwrap();
         let fc = FINAL_CONSONANT.iter().position(|&r| r == jamo_list[2]).unwrap();
@@ -79,23 +73,23 @@ fn disattach_letters(char_vec: &Vec<char>) -> String{
     if char_vec[2] == ' ' && (!DISTACH_EXCEPTIONS.contains(&char_vec[1])){
         char_vec.iter().collect::<String>().trim().to_string()
     }else {
-        assemble(char_vec).to_string()
+        assemble(char_vec.to_vec()).to_string()
     }
 }
 
 fn change_vowels(char_vec:&Vec<char>) -> String {
     if char_vec[2] == ' ' && CHANGE_VOWELS.contains_key(&char_vec[1]){
         let changed = CHANGE_VOWELS.get(&char_vec[1]).unwrap().to_ascii_lowercase();
-        assemble(&vec![char_vec[0], changed, char_vec[2]]).to_string()
+        assemble(vec![char_vec[0], changed, char_vec[2]]).to_string()
     }else{
-        assemble(&char_vec).to_string()
+        assemble(char_vec.to_vec()).to_string()
     }
 }
 
 
 fn palatalization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
     if PALATALIZATION1.contains_key(&fc[2]) && nc[..2]==['ㅇ', 'ㅣ'] {
-        (vec![fc[0], fc[1],' '], vec![PALATALIZATION1.get(&fc[2]).unwrap().clone(),nc[1], nc[2]])
+        (vec![fc[0], fc[1], ' '], vec![PALATALIZATION1.get(&fc[2]).unwrap().clone(),nc[1], nc[2]])
     }else if PALATALIZATION2.contains_key(&fc[2]) && (nc[0]=='ㅎ'){
         (vec![fc[0],fc[1],' '], vec![PALATALIZATION2.get(&fc[2]).unwrap().clone(), nc[1], nc[2]])
     }else{
@@ -105,7 +99,7 @@ fn palatalization(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
 
 
 fn linking(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
-    if LINKING.contains_key(&fc[2].to_string()) && LINKING_WORD.contains(&assemble(&vec![nc[0],nc[1],nc[2]])){
+    if LINKING.contains_key(&fc[2].to_string()) && LINKING_WORD.contains(&assemble(vec![nc[0],nc[1],nc[2]])){
         let v = LINKING.get(&fc[2].to_string()).unwrap().chars().collect::<Vec<char>>();
         (vec![fc[0],fc[1],v[0]],vec![v[1], fc[1],fc[2]])
     }else{
@@ -154,7 +148,7 @@ fn assimilation(fc:&Vec<char>, nc:&Vec<char>) -> (Vec<char>, Vec<char>) {
 
 
 
-fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> String {
+fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> Vec<String> {
     let mut rng = rand::thread_rng();
     let mut mut_text = text_vec.clone();
     for i in 0..(mut_text.len()-1){
@@ -173,7 +167,7 @@ fn phonetic_change(text_vec:Vec<Vec<char>>, method:&str, prob:f64) -> String {
             mut_text[i + 1] = b;
         }
     }
-    mut_text.iter().map(|x| assemble(x).to_string()).collect::<Vec<String>>()
+    mut_text.iter().map(|x| assemble(x.to_vec()).to_string()).collect::<Vec<String>>()
 }
 
 fn get_noise_output(text:&str, method:&str, prob:f64) -> String{
@@ -184,18 +178,24 @@ fn get_noise_output(text:&str, method:&str, prob:f64) -> String{
         "disattach-letters" => output.iter().map(
             |x| match x {
                 x if rng.gen::<f64>() < prob => disattach_letters(x),
-                x => assemble(x).to_string()
+                x => assemble(x.to_vec()).to_string()
             }).collect::<Vec<String>>(),
 
         "change-vowels" => output.iter().map(
             |x| match x {
                 x if rng.gen::<f64>() < prob => change_vowels(x).to_string(),
-                x => assemble(x).to_string()
+                x => assemble(x.to_vec()).to_string()
+            }).collect::<Vec<String>>(),
+
+        "yamin-jungum" => output.iter().map(
+            |x| match x {
+                x if rng.gen::<f64>() < prob => yamin_jungum(x).to_string(),
+                x => assemble(x.to_vec()).to_string()
             }).collect::<Vec<String>>(),
 
         _x if PHONETICS.contains(&method) => phonetic_change(output, &method, prob),
 
-        _ => output.iter().map(|x| assemble(x).to_string()).collect::<Vec<String>>()
+        _ => output.iter().map(|x| assemble(x.to_vec()).to_string()).collect::<Vec<String>>()
     }.iter().map(|x| x.to_string()).collect::<Vec<String>>().join("")
 }
 
