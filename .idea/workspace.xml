@@ -8,9 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="086fe01a-dbd2-4118-8c1f-78b44dbf459e" name="변경" comment="fix liquidization">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/konoise/generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/konoise/generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/konoise/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/konoise/lib.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -117,7 +115,7 @@
       <workItem from="1662120409011" duration="3751000" />
       <workItem from="1662163573725" duration="1473000" />
       <workItem from="1662165904728" duration="1942000" />
-      <workItem from="1662167896802" duration="2294000" />
+      <workItem from="1662167896802" duration="2811000" />
     </task>
     <task id="LOCAL-00001" summary="delete useless files">
       <created>1660447664077</created>
@@ -161,7 +159,14 @@
       <option name="project" value="LOCAL" />
       <updated>1662166757995</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="fix liquidization">
+      <created>1662176104725</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1662176104725</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -62,7 +62,7 @@ class NoiseGenerator:
                  methods: str = 'disattach-letters',
                  prob: float = 0.5,
                  delimiter: str = 'no',
-                 use_rust_tokenizer=True) -> str:
+                 use_rust_tokenizer=True) -> Union[str, List[str]]:
 
         methods = methods.split(',')
 
@@ -80,14 +80,15 @@ class NoiseGenerator:
         splited = spliter.split(text)
         generate_function = self.get_generate_function(methods, prob)
 
-        return list(map(generate_function, splited))
+        output = generate_function(splited) if use_rust_tokenizer else run_imap_multiprocessing(generate_function, splited)
+        return output[0] if len(output) == 1 else output
 
     def batch_generate(self,
                        texts: List[str],
                        methods: str = 'disattach-letters',
                        prob: float = 0.5,
                        delimiter: str = 'no',
-                       use_rust_tokenizer=True):
+                       use_rust_tokenizer=True) -> Union[str, List[str]]:
 
         methods = methods.split(',')
         
@@ -96,6 +97,7 @@ class NoiseGenerator:
                        else partial(self.noiser[m], prob=prob) for m in methods if m in self.noiser]
         else:
             methods = [partial(self.noiser[m], prob=prob) for m in methods if m in self.noiser]
+
         spliter = self.spliter.get(delimiter)
 
         assert spliter is not None, "'delimiter' should be one of 'no', 'sentence', and 'paragraph'."
@@ -104,4 +106,5 @@ class NoiseGenerator:
         splited = [unit for text in texts for unit in spliter.split(text)]
         generate_function = self.get_generate_function(methods, prob)
         
-        return generate_function(splited) if use_rust_tokenizer else run_imap_multiprocessing(generate_function, splited)
+        output = generate_function(splited) if use_rust_tokenizer else run_imap_multiprocessing(generate_function, splited)
+        return output[0] if len(output) == 1 else output
