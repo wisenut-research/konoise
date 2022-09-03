@@ -10,10 +10,6 @@ def _cond_base(vlist, rng, prob=1.):
     return vlist[2] != '' and rng.random() < prob
 
 
-def _cond_yamin(vlist):
-    return vlist[:2] in _dict_yamin or vlist in _dict_yamin
-
-
 def yamin_jungum(text, prob=0.5):
     decomposed = [disassemble(t) for t in text]
     replaced = []
