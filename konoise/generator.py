@@ -67,14 +67,16 @@ class NoiseGenerator:
         ]
         assert len(available_methods) > 0, f"method should be one of {list(self.noiser.keys())}."
 
-        texts = [ (i, j, e) for i, t in enumerate(text) for j, e in spliter.split(t) if isinstance(e, str)]
+        texts = [ (i, j, e) for i, t in enumerate(text) for j, e in enumerate(spliter.split(t)) if isinstance(e, str)]
 
         random.shuffle(texts)
         doc_ids, sen_ids, sentences = list(zip(*texts))
 
         steps = max(int(len(sentences)/len(available_methods)), 1)
-        outputs = []
         max_len = len(available_methods)-1
+
+
+        outputs = []
         for m, values in enumerate(partition(sentences, steps)):
             if len(values):
                 outputs += available_methods[min(m, max_len)](values)
@@ -83,4 +85,4 @@ class NoiseGenerator:
         for d, s, o in zip(doc_ids, sen_ids, outputs):
             output_dict[d][s] = o
 
-        return [[output_dict[d][s] for s in sorted(output_dict[d].keys())] for d in sorted(output_dict.keys())]
+        return [[e for _, e in sorted(v.items())] for _, v in sorted(output_dict.items())]
