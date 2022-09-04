@@ -6,26 +6,13 @@ from .segments import change_vowels, disattach_letters
 from .phoneme import phonetic_change
 from .yamin import yamin_jungum
 from functools import partial
-from typing import Union, Optional, List, Callable, Iterable
-from tqdm import tqdm
-
-from multiprocessing import cpu_count, Pool
-
+from typing import Union, List
 from .rust_generator import *
 
-RUST_AVAIL_METHODS = {
+
+_AVAILABLE_METHODS = {
     "palatalization", "liquidization", "nasalization", "assimilation", "linking", "disattach-letters", "change-vowels", "yamin-jungum"
 }
-
-
-def run_imap_multiprocessing(func:Callable, argument_list: Iterable, num_processes: Optional[int] = None):
-    pool = Pool(processes=cpu_count() if num_processes is None else num_processes)
-    result_list_tqdm = []
-
-    for result in tqdm(pool.imap(func=func, iterable=argument_list), total=len(argument_list)):
-        result_list_tqdm.append(result)
-
-    return result_list_tqdm
 
 
 class NoiseGenerator:
@@ -65,9 +52,9 @@ class NoiseGenerator:
             else lambda xs: [self.noiser[m](x, prob) for x in xs]
             for m in methods.split(',') if m in self.noiser
         ]
-        assert len(available_methods) > 0, f"method should be one of {list(self.noiser.keys())}."
+        assert len(available_methods) > 0, f"method should be one of {_AVAILABLE_METHODS}."
 
-        texts = [ (i, j, e) for i, t in enumerate(text) for j, e in enumerate(spliter.split(t)) if isinstance(e, str)]
+        texts = [(i, j, e) for i, t in enumerate(text) for j, e in enumerate(spliter.split(t)) if isinstance(e, str)]
 
         random.shuffle(texts)
         doc_ids, sen_ids, sentences = list(zip(*texts))
