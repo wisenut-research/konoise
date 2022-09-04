@@ -2,6 +2,7 @@ use std::iter::FromIterator;
 use phf::phf_map;
 use rand::prelude::*;
 extern crate pyo3;
+
 use pyo3::prelude::*;
 use rayon::prelude::*;
 
@@ -198,6 +199,43 @@ fn get_noise_output(text:&str, method:&str, prob:f64) -> String{
     }.iter().map(|x| x.to_string()).collect::<Vec<String>>().join("")
 }
 
+fn _add_2_idx_shuffle(texts:Vec<Vec<String>>) -> (Vec<usize>, Vec<usize>, Vec<String>){
+    let mut output = texts.iter().enumerate()
+        .flat_map(|(i,x)| x.iter().enumerate().map(|(j, y)|(i,j,y))
+            .collect::<Vec<_>>()).collect::<Vec<_>>();
+    let mut rng = rand::thread_rng();
+    output.shuffle(&mut rng);
+    let (mut a, mut b, mut c) = (vec![], vec![], vec![]);
+    for &(x,y,z) in output.iter() {
+        a.push(x);
+        b.push(y);
+        c.push(z.to_owned());
+    }
+    (a, b, c)
+}
+
+
+fn _merge_2d_sentences(doc_ids:Vec<i32>, sen_ids:Vec<i32>, sentences:Vec<String>) -> Vec<Vec<String>>{
+    let mut output = vec![vec![]; (doc_ids.iter().max().unwrap().to_owned()+1) as usize];
+    for (a, _, c) in izip!(&doc_ids, &sen_ids, &sentences).sorted(){
+        output[a.to_owned() as usize].push(c.to_owned());
+    }
+    output
+}
+
+
+#[pyfunction]
+fn add_2_idx_shuffle(_py: Python, splited_texts:Vec<Vec<String>>)-> PyResult<(Vec<usize>, Vec<usize>, Vec<String>)>{
+    Ok(_add_2_idx_shuffle(splited_texts))
+}
+
+
+#[pyfunction]
+fn merge_2d_sentences(_py: Python, doc_ids:Vec<i32>, sen_ids:Vec<i32>, sentences:Vec<String>) -> PyResult<Vec<Vec<String>>>{
+    Ok(_merge_2d_sentences(doc_ids, sen_ids, sentences))
+}
+
+
 #[pyfunction]
 fn get_noise(_py: Python, text:&str, method:&str, prob:f64)-> PyResult<String>{
     Ok(get_noise_output(text, method, prob))
@@ -212,5 +250,7 @@ fn get_noise_batch(_py: Python, texts:Vec<&str>, method:&str, prob:f64)-> PyResu
 fn rust_generator(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(get_noise, m)?)?;
     m.add_function(wrap_pyfunction!(get_noise_batch, m)?)?;
+    m.add_function(wrap_pyfunction!(add_2_idx_shuffle, m)?)?;
+    m.add_function(wrap_pyfunction!(merge_2d_sentences, m)?)?;
     Ok(())
 }
