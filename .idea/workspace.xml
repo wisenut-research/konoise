@@ -10,8 +10,6 @@
     <list default="true" id="086fe01a-dbd2-4118-8c1f-78b44dbf459e" name="변경" comment="update version">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/konoise/generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/konoise/generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/konoise/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/konoise/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -165,7 +163,7 @@
       <workItem from="1662163573725" duration="1473000" />
       <workItem from="1662165904728" duration="1942000" />
       <workItem from="1662167896802" duration="5243000" />
-      <workItem from="1662179553934" duration="9854000" />
+      <workItem from="1662179553934" duration="14014000" />
     </task>
     <task id="LOCAL-00001" summary="delete useless files">
       <created>1660447664077</created>
@@ -258,7 +256,14 @@
       <option name="project" value="LOCAL" />
       <updated>1662178356660</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="update version">
+      <created>1662251062951</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1662251062951</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

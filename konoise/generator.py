@@ -72,12 +72,14 @@ class NoiseGenerator:
         random.shuffle(texts)
         doc_ids, sen_ids, sentences = list(zip(*texts))
 
-        steps = int(len(sentences)/len(available_methods))
+        steps = max(int(len(sentences)/len(available_methods)), 1)
         outputs = []
+        max_len = len(available_methods)-1
         for m, values in enumerate(partition(sentences, steps)):
-            outputs += available_methods[m](values)
+            if len(values):
+                outputs += available_methods[min(m, max_len)](values)
 
-        output_dict = defaultdict(lambda:defaultdict(str))
+        output_dict = defaultdict(lambda: defaultdict(str))
         for d, s, o in zip(doc_ids, sen_ids, outputs):
             output_dict[d][s] = o
 
