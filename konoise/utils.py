@@ -1,4 +1,5 @@
 import json
+import itertools
 
 consonant = ('ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ')
 vowel = ('ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ')
@@ -28,3 +29,8 @@ def assemble(vlist):
 def load_json(path: str):
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
+
+
+def partition(iterable_values, size):
+    for i in range(0, len(iterable_values), size):
+        yield list(itertools.islice(iterable_values, i, i + size))

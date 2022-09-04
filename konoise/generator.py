@@ -1,5 +1,7 @@
 import random
+from collections import defaultdict
 from .spliter import NoSplit, SentenceSplit, ParagraphSplit
+from .utils import partition
 from .segments import change_vowels, disattach_letters
 from .phoneme import phonetic_change
 from .yamin import yamin_jungum
@@ -47,64 +49,36 @@ class NoiseGenerator:
             'yamin-jungum': yamin_jungum,
         }
 
-    def get_generate_function(self, methods, prob):
-        if len(methods) == 1:
-            func = methods[0]
-            def generate_function(text):
-                return func(text)
-        else:
-            def generate_function(text):
-                return self.rng.choice(methods)(text)
-        return generate_function
-
     def generate(self,
-                 text: str,
+                 text: Union[str, List[str]],
                  methods: str = 'disattach-letters',
                  prob: float = 0.5,
                  delimiter: str = 'no',
-                 use_rust_tokenizer=True) -> Union[str, List[str]]:
+                 use_rust_tokenizer=True) -> Union[str, List[str], List[List[str]]]:
 
-        methods = methods.split(',')
-
-        if use_rust_tokenizer:
-            methods = [partial(get_noise, method=m, prob=prob) if m in RUST_AVAIL_METHODS
-                       else partial(self.noiser[m], prob=prob) for m in methods if m in self.noiser]
-        else:
-            methods = [partial(self.noiser[m], prob=prob) for m in methods if m in self.noiser]
-
+        text = [text] if isinstance(text, str) else text
         spliter = self.spliter.get(delimiter)
-
         assert spliter is not None, "'delimiter' should be one of 'no', 'sentence', and 'paragraph'."
-        assert len(methods) > 0, f"method should be one of {list(self.noiser.keys())}."
 
-        splited = spliter.split(text)
-        generate_function = self.get_generate_function(methods, prob)
+        available_methods = [
+            partial(get_noise_batch, method=m, prob=prob) if use_rust_tokenizer
+            else lambda xs: [self.noiser[m](x, prob) for x in xs]
+            for m in methods.split(',') if m in self.noiser
+        ]
+        assert len(available_methods) > 0, f"method should be one of {list(self.noiser.keys())}."
 
-        output = generate_function(splited) if use_rust_tokenizer else run_imap_multiprocessing(generate_function, splited)
-        return output[0] if len(output) == 1 else output
+        texts = [ (i, j, e) for i, t in enumerate(text) for j, e in spliter.split(t) if isinstance(e, str)]
 
-    def batch_generate(self,
-                       texts: List[str],
-                       methods: str = 'disattach-letters',
-                       prob: float = 0.5,
-                       delimiter: str = 'no',
-                       use_rust_tokenizer=True) -> Union[str, List[str]]:
+        random.shuffle(texts)
+        doc_ids, sen_ids, sentences = list(zip(*texts))
 
-        methods = methods.split(',')
-        
-        if use_rust_tokenizer:
-            methods = [partial(get_noise_batch, method=m, prob=prob) if m in RUST_AVAIL_METHODS
-                       else partial(self.noiser[m], prob=prob) for m in methods if m in self.noiser]
-        else:
-            methods = [partial(self.noiser[m], prob=prob) for m in methods if m in self.noiser]
+        steps = int(len(sentences)/len(available_methods))
+        outputs = []
+        for m, values in enumerate(partition(sentences, steps)):
+            outputs += available_methods[m](values)
 
-        spliter = self.spliter.get(delimiter)
+        output_dict = defaultdict(lambda:defaultdict(str))
+        for d, s, o in zip(doc_ids, sen_ids, outputs):
+            output_dict[d][s] = o
 
-        assert spliter is not None, "'delimiter' should be one of 'no', 'sentence', and 'paragraph'."
-        assert len(methods) > 0, f"method should be one of {list(self.noiser.keys())}."
-        
-        splited = [unit for text in texts for unit in spliter.split(text)]
-        generate_function = self.get_generate_function(methods, prob)
-        
-        output = generate_function(splited) if use_rust_tokenizer else run_imap_multiprocessing(generate_function, splited)
-        return output[0] if len(output) == 1 else output
+        return [[output_dict[d][s] for s in sorted(output_dict[d].keys())] for d in sorted(output_dict.keys())]
