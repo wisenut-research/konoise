@@ -3,7 +3,7 @@
 
 
 ### 지원
-- manylinux (lastest version, 1.7.5)
+- manylinux (lastest version, 1.8.5)
 - windows, macOS (old version)
 
 
