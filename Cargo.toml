@@ -17,6 +17,7 @@ rand="0.7"
 rayon="1.5.3"
 phf = { version = "0.10", features = ["macros"] }
 fancy-regex = "0.10.0"
+itertools = "*"
 
 [dependencies.pyo3]
 version = "*"

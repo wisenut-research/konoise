@@ -5,7 +5,8 @@ extern crate pyo3;
 
 use pyo3::prelude::*;
 use rayon::prelude::*;
-
+use itertools::Itertools;
+use itertools::izip;
 
 static PHONETICS: [&str; 5] = ["palatalization","linking", "liquidization", "nasalization", "assimilation"];
 
@@ -215,8 +216,11 @@ fn _add_2_idx_shuffle(texts:Vec<Vec<String>>) -> (Vec<usize>, Vec<usize>, Vec<St
 }
 
 
+
+
 fn _merge_2d_sentences(doc_ids:Vec<i32>, sen_ids:Vec<i32>, sentences:Vec<String>) -> Vec<Vec<String>>{
     let mut output = vec![vec![]; (doc_ids.iter().max().unwrap().to_owned()+1) as usize];
+
     for (a, _, c) in izip!(&doc_ids, &sen_ids, &sentences).sorted(){
         output[a.to_owned() as usize].push(c.to_owned());
     }
