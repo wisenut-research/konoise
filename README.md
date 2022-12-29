@@ -11,6 +11,10 @@
 ```
 $ pip install konoise
 ```
+for windows
+```
+$ pip install git+https://github.com/wisenut-research/konoise.git
+```
 
 ### 실행 방법
 ```
