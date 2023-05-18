@@ -6,7 +6,7 @@ with open("README.md", mode="r", encoding="utf-8") as readme:
 
 setup(
     name='konoise',
-    version='1.0.8.4',
+    version='1.0.8.5',
     rust_extensions=[RustExtension("konoise/rust_generator", binding=Binding.PyO3)],
     description='Korean Noise Generator',
     long_description=long_description,
